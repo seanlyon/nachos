@@ -1,0 +1,12 @@
+Liam Timana
+Project 0 Report
+
+a) Installation of NachOS was fairly straightforward thanks to previous experience uisng PuTTY, Ocelot, and WinSCP. All programs
+were ran on my Windows PC running on Intel i9 with 64.0 GB of RAM. 
+
+b) Experience with tests was also straight forward once again due to previous experience. Test ran correctly ./nachos looped 4 times and halted without error with 130 system ticks
+halt functioned as intended immediately halting the system before exiting with single step shows several steps loops through system registers before calling the halt() system
+call.
+
+c) Threads are a series of process that can be executed concurrently with the Thread class containing routines to manage them.
+according to the thread source code, there are four main operations: fork, finish, yield, and sleep.
