@@ -1,0 +1,35 @@
+Project0 Report
+
+Sean Lyon
+
+a) I downloaded Nachos on Ubuntu 24.04 running on an Intel N100 with 256gb ssd and 8gb ram. 
+Extraction was straightforward. I ran into errors when I ran the make command due to missing libraries. 
+I had to install gcc-multilib and g++-multilib in order to build Nachos correctly. 
+
+b) The tests ran correctly the first time. The threads demo loops each thread 5 times, 
+checks for ready thread and interrupts, and calls the Halt() sys call. 
+Finally the program prints system information and cleans up memory before terminating. 
+The halt test executes the Halt() system call. When single-stepping, the steps started on tick 11 and terminated on tick 22. 
+Similar system information was printed and memory cleaned up before terminating.
+
+c) The Thread class handles the control of threads in Nachos. It keeps track of the stack, machine state, 
+and user program states when switching contexts. Fork() creates a copy of the current thread to start new procedures. 
+CheckOverflow() checks if the thread’s stack has run out of space. Finish() is called once the forked procedure is done, 
+and schedules the thread for destruction. Yield() passes CPU to any other ready thread, 
+and places the current thread at the end of the ready list. Sleep() is called when a thread’s execution is blocked, 
+it will be woken up at some later point.
+
+Liam Timana
+
+a) Installation of NachOS was fairly straightforward thanks to previous experience uisng PuTTY, Ocelot, and WinSCP. All programs
+were ran on my Windows PC running on Intel i9 with 64.0 GB of RAM. 
+
+b) Experience with tests was also straight forward once again due to previous experience. 
+Test ran correctly ./nachos looped 4 times and halted without error with 130 system ticks halt functioned as intended 
+immediately halting the system before exiting with single step shows several steps loops through system registers 
+before calling the halt() system call.
+
+c) Threads are a series of process that can be executed concurrently with the Thread class containing routines to manage them.
+according to the thread source code, there are four main operations: fork, finish, yield, and sleep.
+
+Dario Munoz
