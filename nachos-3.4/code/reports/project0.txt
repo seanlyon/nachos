@@ -32,7 +32,7 @@ before calling the halt() system call.
 c) Threads are a series of process that can be executed concurrently with the Thread class containing routines to manage them.
 according to the thread source code, there are four main operations: fork, finish, yield, and sleep.
 
-Dario MunozDavid Muñoz
+Dario Munoz
 
 a) I installed Nachos on Ubuntu 24.04 running in WSL on Windows 11, with an AMD Ryzen 7 5000 series CPU, 
 16 GB of RAM, and a 2 TB SSD. Extracting the Nachos 3.4 source was straightforward, but compilation initially 
@@ -56,3 +56,4 @@ CheckOverflow(): Uses a STACK_FENCEPOST to detect stack overflows.
 
 Additionally, SaveUserState() and RestoreUserState() handle saving and restoring user registers during context 
 switches. Together, these methods implement cooperative multitasking and safe thread scheduling within Nachos.
+
