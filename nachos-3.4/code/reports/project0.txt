@@ -32,4 +32,27 @@ before calling the halt() system call.
 c) Threads are a series of process that can be executed concurrently with the Thread class containing routines to manage them.
 according to the thread source code, there are four main operations: fork, finish, yield, and sleep.
 
-Dario Munoz
+Dario MunozDavid Muñoz
+
+a) I installed Nachos on Ubuntu 24.04 running in WSL on Windows 11, with an AMD Ryzen 7 5000 series CPU, 
+16 GB of RAM, and a 2 TB SSD. Extracting the Nachos 3.4 source was straightforward, but compilation initially 
+failed due to missing 32-bit development libraries. Installing gcc-multilib and g++-multilib fixed the issue, 
+and Nachos then built successfully.
+
+b) Both provided demos ran correctly. The threads demo alternated execution between two threads, looping five 
+times each before halting, printing system statistics, and cleaning up memory. The halt test executed the 
+Halt() system call and terminated gracefully, displaying similar system information. In single-step mode, 
+execution started around tick 11 and halted around tick 22, confirming Nachos’s scheduling and interrupt 
+handling worked as expected.
+
+c) The Thread class in Nachos manages thread lifecycle and scheduling. It maintains stack pointers, machine 
+state, and registers for both user and kernel contexts. Key functions include:
+
+Fork(): Allocates a stack via StackAllocate() and schedules a new thread to run a specified function.
+Finish(): Marks a completed thread for destruction and blocks it until safely cleaned up.
+Yield(): Relinquishes CPU control and moves the current thread to the ready queue if others are runnable.
+Sleep(): Blocks a thread until explicitly awakened, calling Interrupt::Idle() if no threads are ready.
+CheckOverflow(): Uses a STACK_FENCEPOST to detect stack overflows.
+
+Additionally, SaveUserState() and RestoreUserState() handle saving and restoring user registers during context 
+switches. Together, these methods implement cooperative multitasking and safe thread scheduling within Nachos.
