@@ -24,6 +24,21 @@ int testnum = 1;
 //	purposes.
 //----------------------------------------------------------------------
 
+#if defined(CHANGED) && defined(THREADS)
+int SharedVariable;
+void SimpleThread(int which) {
+    int num, val;
+    for (num = 0; num < 5; num++) {
+        val = SharedVariable;
+        printf("*** thread %d sees value %d\n", which, val);
+        currentThread->Yield();
+        SharedVariable = val+1;
+        currentThread->Yield();
+    }
+    val = SharedVariable;
+    printf("*** thread %d sees final value %d\n", which, val);
+}
+#else
 void
 SimpleThread(int which)
 {
@@ -34,6 +49,7 @@ SimpleThread(int which)
         currentThread->Yield();
     }
 }
+#endif
 
 //----------------------------------------------------------------------
 // ThreadTest1
@@ -41,32 +57,63 @@ SimpleThread(int which)
 //	to call SimpleThread, and then calling SimpleThread ourselves.
 //----------------------------------------------------------------------
 
+#if defined(CHANGED) && defined(THREADS)
+void
+ThreadTest1(int n)
+{
+    DEBUG('t', "Entering ThreadTest1\n");
+
+    for (int i = 1; i <= n; i++) {
+    char* name = "forked thread";
+    Thread* t = new Thread(name);
+    t->Fork(SimpleThread, i);
+    }
+
+    SimpleThread(0);
+}    
+#else
 void
 ThreadTest1()
 {
-    DEBUG('t', "Entering ThreadTest1");
+    DEBUG('t', "Entering ThreadTest1\n");
 
     Thread *t = new Thread("forked thread");
 
     t->Fork(SimpleThread, 1);
     SimpleThread(0);
 }
+#endif
 
 //----------------------------------------------------------------------
 // ThreadTest
 // 	Invoke a test routine.
 //----------------------------------------------------------------------
 
+#if defined(CHANGED) && defined(THREADS)
+void
+ThreadTest(int n)
+{
+    switch (testnum) {
+    case 1:
+    ThreadTest1(n);
+    break;
+    default:
+    printf("No test specified.\n");
+    break;
+    }
+}
+#else
 void
 ThreadTest()
 {
     switch (testnum) {
     case 1:
-	ThreadTest1();
-	break;
+    ThreadTest1();
+    break;
     default:
-	printf("No test specified.\n");
-	break;
+    printf("No test specified.\n");
+    break;
     }
 }
+#endif
 
