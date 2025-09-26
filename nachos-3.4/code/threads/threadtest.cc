@@ -12,6 +12,11 @@
 #include "copyright.h"
 #include "system.h"
 
+#ifdef HW1_SEMAPHORES
+#include "synch.h"
+Semaphore* semaphore = new Semaphore("SimpleThread", 1);
+#endif
+
 // testnum is set in main.cc
 int testnum = 1;
 
@@ -28,6 +33,21 @@ int testnum = 1;
 int SharedVariable;
 void SimpleThread(int which) {
     int num, val;
+#ifdef HW1_SEMAPHORES
+    for (num = 0; num < 5; num++) {
+        semaphore->P();
+        val = SharedVariable;
+        printf("*** thread %d sees value %d\n", which, val);
+        currentThread->Yield();
+        SharedVariable = val+1;
+        semaphore->V();
+        currentThread->Yield();
+    }
+    semaphore->P();
+    val = SharedVariable;
+    semaphore->V();
+    printf("*** thread %d sees final value %d\n", which, val);
+#else
     for (num = 0; num < 5; num++) {
         val = SharedVariable;
         printf("*** thread %d sees value %d\n", which, val);
@@ -37,6 +57,7 @@ void SimpleThread(int which) {
     }
     val = SharedVariable;
     printf("*** thread %d sees final value %d\n", which, val);
+#endif
 }
 #else
 void
@@ -64,8 +85,7 @@ ThreadTest1(int n)
     DEBUG('t', "Entering ThreadTest1\n");
 
     for (int i = 1; i <= n; i++) {
-    char* name = "forked thread";
-    Thread* t = new Thread(name);
+    Thread* t = new Thread("forked thread");
     t->Fork(SimpleThread, i);
     }
 
