@@ -11,11 +11,7 @@
 
 #include "copyright.h"
 #include "system.h"
-
-#ifdef HW1_SEMAPHORES
 #include "synch.h"
-Semaphore* semaphore = new Semaphore("SimpleThread", 1);
-#endif
 
 // testnum is set in main.cc
 int testnum = 1;
@@ -28,6 +24,14 @@ int testnum = 1;
 //	"which" is simply a number identifying the thread, for debugging
 //	purposes.
 //----------------------------------------------------------------------
+
+#ifdef HW1_SEMAPHORES
+Semaphore* semaphore = new Semaphore("SimpleThread semaphore", 1);
+#endif
+
+#ifdef HW1_LOCKS
+Lock* lock = new Lock("SimpleThread lock");
+#endif
 
 #if defined(CHANGED) && defined(THREADS)
 int SharedVariable;
@@ -46,6 +50,20 @@ void SimpleThread(int which) {
     semaphore->P();
     val = SharedVariable;
     semaphore->V();
+    printf("*** thread %d sees final value %d\n", which, val);
+#elif defined(HW1_LOCKS)
+    for (num = 0; num < 5; num++) {
+        lock->Acquire();
+        val = SharedVariable;
+        printf("*** thread %d sees value %d\n", which, val);
+        currentThread->Yield();
+        SharedVariable = val+1;
+        lock->Release();
+        currentThread->Yield();
+    }
+    lock->Acquire();
+    val = SharedVariable;
+    lock->Release();
     printf("*** thread %d sees final value %d\n", which, val);
 #else
     for (num = 0; num < 5; num++) {
