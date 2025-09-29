@@ -31,6 +31,7 @@ Semaphore* semaphore = new Semaphore("SimpleThread semaphore", 1);
 
 #ifdef HW1_LOCKS
 Lock* lock = new Lock("SimpleThread lock");
+Condition* condition = new Condition("SimpleThread condition");
 #endif
 
 #if defined(CHANGED) && defined(THREADS)
@@ -54,15 +55,21 @@ void SimpleThread(int which) {
 #elif defined(HW1_LOCKS)
     for (num = 0; num < 5; num++) {
         lock->Acquire();
+        while (!lock->isHeldByCurrentThread())
+            condition->Wait(lock);
         val = SharedVariable;
         printf("*** thread %d sees value %d\n", which, val);
         currentThread->Yield();
         SharedVariable = val+1;
+        condition->Signal(lock);
         lock->Release();
         currentThread->Yield();
     }
     lock->Acquire();
+    while(!lock->isHeldByCurrentThread())
+        condition->Wait(lock);
     val = SharedVariable;
+    condition->Signal(lock);
     lock->Release();
     printf("*** thread %d sees final value %d\n", which, val);
 #else
