@@ -61,6 +61,9 @@ extern int testnum;
 
 #ifdef CHANGED
 extern void ThreadTest(int);
+extern void SemaphorePing(void);
+extern void LockTest(void);
+extern void Ping(void);
 #else
 extern void ThreadTest(void);
 #endif
@@ -108,6 +111,9 @@ main(int argc, char **argv)
     }
 #ifdef CHANGED
     ThreadTest(3);
+//    SemaphorePing();
+//    LockTest();
+//    Ping();
 #else
     ThreadTest();
 #endif
