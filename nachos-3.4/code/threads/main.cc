@@ -64,6 +64,7 @@ extern void ThreadTest(int);
 extern void SemaphorePing(void);
 extern void LockTest(void);
 extern void Ping(void);
+extern void ElevatorTest(int numFloors, int numPersons);
 #else
 extern void ThreadTest(void);
 #endif
@@ -110,10 +111,11 @@ main(int argc, char **argv)
       }
     }
 #ifdef CHANGED
-    ThreadTest(3);
+//    ThreadTest(3);
 //    SemaphorePing();
 //    LockTest();
 //    Ping();
+    ElevatorTest(5, 5);
 #else
     ThreadTest();
 #endif
