@@ -1,69 +1,114 @@
-#include "elevator.h"
+#include "copyright.h"
 #include "system.h"
 #include "synch.h"
+#include "elevator.h"
 
-Lock* lock = new Lock("Elevator lock");
-Condition* cond = new Condition("Elevator condition");
 
-List* call = new List;
-List* stop = new List;
+int nextPersonID = 1;
+Lock *personIDLock = new Lock("PersonIDLock");
 
-void Elevator(int numFloors) {
-    ElevatorThread* e = new ElevatorThread;
-    e->numFloors = numFloors;
 
-    Thread* t = new Thread("elevator");
-    t->Fork(elevatorLoop, (int)e);
-}
+ELEVATOR *e;
 
-void elevatorLoop(int elevatorThread) {
-    ElevatorThread* e = (ElevatorThread*)elevatorThread;
-    int nextCall = 0;
-    int nextStop = 0;
-    while (true) {
-        lock->Acquire();
-        while (stop->IsEmpty() && call->IsEmpty()) {
-            printf("elevatorLoop\n");
-            cond->Wait(lock);
-        }
-        nextCall = (int)call->Remove();
-        nextStop = (int)stop->Remove();
-        
-        if (nextStop != NULL) {
-            if (e->currentFloor > nextStop) {
-                e->currentFloor--;
-                stop->Prepend((void*)nextStop);
-            } else if (e->currentFloor < nextStop) {
-                e->currentFloor++;
-                stop->Prepend((void*)nextStop);
-            } else {
-                printf("currentFloor = nextStop");
-            }
-        }
-        else if (nextCall != NULL) {
-            if (e->currentFloor > nextCall) {
-                call->Prepend((void*)nextCall);
-            } else if (e->currentFloor < nextCall) {
-                call->Prepend((void*)nextCall);
-            } else {
-                printf("currentFloor = nextCall");
-            }
-        }
-        lock->Release();
+
+void ELEVATOR::start() {
+
+    while(1) {
+
+        // A. Wait until hailed
+
+        // B. While there are active persons, loop doing the following
+        //      0. Acquire elevatorLock
+        //      1. Signal persons inside elevator to get off (leaving->broadcast(elevatorLock))
+        //      2. Signal persons atFloor to get in, one at a time, checking occupancyLimit each time
+        //      2.5 Release elevatorLock
+        //      3. Spin for some time
+                for(int j =0 ; j< 1000000; j++) {
+                    currentThread->Yield();
+                }
+        //      4. Go to next floor
+        //  printf("Elevator arrives on floor %d", )
     }
 }
 
+void ElevatorThread(int numFloors) {
+
+    printf("Elevator with %d floors was created!\n", numFloors);
+
+    e = new ELEVATOR(numFloors);
+
+    e->start();
+
+
+}
+
+ELEVATOR::ELEVATOR(int numFloors) {
+    currentFloor = 1;
+    entering = new Condition*[numFloors];
+    // Initialize entering
+    for (int i = 0; i < numFloors; i++) {
+        entering[i] = new Condition("Entering " + i);
+    }
+    personsWaiting = new int[numFloors];
+    elevatorLock = new Lock("ElevatorLock");
+
+    // Initialize leaving
+}
+
+
+void Elevator(int numFloors) {
+    // Create Elevator Thread
+    Thread *t = new Thread("Elevator");
+    t->Fork(ElevatorThread, numFloors);
+}
+
+
+void ELEVATOR::hailElevator(Person *p) {
+    // 1. Increment waiting persons atFloor
+    // 2. Hail Elevator
+    // 2.5 Acquire elevatorLock;
+    // 3. Wait for elevator to arrive atFloor [entering[p->atFloor]->wait(elevatorLock)]
+    // 5. Get into elevator
+    printf("Person %d got into the elevator.\n", p->id);
+    // 6. Decrement persons waiting atFloor [personsWaiting[atFloor]++]
+    // 7. Increment persons inside elevator [occupancy++]
+    // 8. Wait for elevator to reach toFloor [leaving[p->toFloor]->wait(elevatorLock)]
+    // 9. Get out of the elevator
+    printf("Person %d got out of the elevator.\n", p->id);
+    // 10. Decrement persons inside elevator
+    // 11. Release elevatorLock;
+}
+
+void PersonThread(int person) {
+
+    Person *p = (Person *)person;
+
+    printf("Person %d wants to go from floor %d to %d\n", p->id, p->atFloor, p->toFloor);
+
+    e->hailElevator(p);
+
+}
+
+int getNextPersonID() {
+    int personID = nextPersonID;
+    personIDLock->Acquire();
+    nextPersonID = nextPersonID + 1;
+    personIDLock->Release();
+    return personID;
+}
+
+
 void ArrivingGoingFromTo(int atFloor, int toFloor) {
-    PersonThread* p = new PersonThread;
-    p->id = atFloor;
+
+
+    // Create Person struct
+    Person *p = new Person;
+    p->id = getNextPersonID();
     p->atFloor = atFloor;
     p->toFloor = toFloor;
 
-    Thread* t = new Thread("person");
-    t->Fork(rideElevator, (int)p);
-}
+    // Creates Person Thread
+    Thread *t = new Thread("Person " + p->id);
+    t->Fork(PersonThread, (int)p);
 
-void rideElevator(int personThread) {
-    PersonThread* p = (PersonThread*)personThread;
 }
-

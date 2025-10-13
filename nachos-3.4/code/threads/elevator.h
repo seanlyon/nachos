@@ -1,24 +1,36 @@
+
 #ifndef ELEVATOR_H
 #define ELEVATOR_H
 
 #include "copyright.h"
 
 void Elevator(int numFloors);
-void elevatorLoop(int elevatorThread);
 void ArrivingGoingFromTo(int atFloor, int toFloor);
-void rideElevator(int personThread);
 
-struct PersonThread {
+typedef struct Person {
     int id;
     int atFloor;
     int toFloor;
-};
+} Person;
 
-struct ElevatorThread {
-    int numFloors;
+
+class ELEVATOR {
+
+public:
+    ELEVATOR(int numFloors);
+    ~ELEVATOR();
+    void hailElevator(Person *p);
+    void start();
+
+private:
     int currentFloor;
-    int numPeopleIn;
-};
+    Condition **entering;
+    Condition **leaving;
+    int *personsWaiting;
+    int occupancy;
+    int maxOccupancy;
+    Lock *elevatorLock;
 
+};
 
 #endif
