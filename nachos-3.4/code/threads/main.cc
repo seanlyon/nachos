@@ -111,11 +111,13 @@ main(int argc, char **argv)
       }
     }
 #ifdef CHANGED
-//    ThreadTest(3);
+    ThreadTest(3);
 //    SemaphorePing();
 //    LockTest();
 //    Ping();
+#ifdef HW1_ELEVATOR
     ElevatorTest(8, 5);
+#endif
 #else
     ThreadTest();
 #endif
