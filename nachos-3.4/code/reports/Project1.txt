@@ -1,0 +1,54 @@
+Project 1 Report – Nachos Threads & Synchronization
+Completed Work
+Exercise 1 – Semaphores: Completed. Synchronized all threads correctly; final shared value consistent; verified with -rs random scheduling.
+Exercise 2 – Locks:  Completed. Replaced semaphores with Lock; logic identical; verified ownership rules (isHeldByCurrentThread).
+Exercise 3 – Condition Variables: Implemented Mesa-style Wait, Signal, and Broadcast; tested with multiple threads using shared locks.
+Exercise 4 – Elevator:  Completed. Single elevator, 5-person capacity, correct up/down travel, and required status prints; tested with random workloads.
+
+How to Build & Run
+
+Kept DEFINES in the Makefiles so graders can enable any exercise with:
+
+make 'DEFINES=-DTHREADS -DCHANGED -DHW1_ELEVATOR'
+
+Binary is built at:
+
+code/threads/nachos
+
+Run example:
+
+cd code/threads
+./nachos -rs 7
+
+
+Errors
+	1.	Linker error – undefined reference to testnum
+Added a single global int testnum = 1; in threadtest.cc and referenced it as extern in main.cc.
+	2.	make clean errors
+Ignored harmless “No match” messages; used make clean || gmake clean || true.
+	3.	Unsynchronized vs. synchronized outputs
+Verified correct race behavior, then used P()/V() to enforce atomic updates (final = 25 for 5×5 increments).
+	4.	Build macros
+Wrapped each exercise in #ifdef HW1_* so graders can switch tests easily.
+	5.	Locks implementation
+Built with a binary Semaphore; tracked owner to enforce correct Release().
+	6.	Condition Variables
+Followed Mesa semantics: Wait releases lock, sleeps, then reacquires; Signal and Broadcast wake waiting threads.
+	7.	Elevator – missing RemoveFront()
+Nachos List only has Remove(). Fixed all calls.
+	8.	Multiple definitions (Elevator / ArrivingGoingFromTo)
+Removed duplicate implementations from main.cc; kept only in elevator.cc.
+	9.	./nachos: Command not found
+Realized binary lives in code/threads; ran from that directory.
+	10.	Ping() link error
+Added ping.cc to Makefile.common, ran make depend, rebuilt.
+	11.	Elevator behavior
+Working simulation: 1 elevator, 5 capacity, wakes from idle when needed, delays ≈ 50 ticks/floor, proper entry/exit prints.
+
+Known Limitations
+	Elevator uses a simple sweep (no direction prioritization).
+	Condition broadcast under heavy contention untested but logically sound.
+
+Final Status
+All four exercises compile, run, and print correct outputs under Nachos random scheduling.
+Project ready for submission 
