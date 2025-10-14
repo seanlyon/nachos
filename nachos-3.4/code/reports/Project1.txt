@@ -44,11 +44,3 @@ Realized binary lives in code/threads; ran from that directory.
 Added ping.cc to Makefile.common, ran make depend, rebuilt.
 	11.	Elevator behavior
 Working simulation: 1 elevator, 5 capacity, wakes from idle when needed, delays ≈ 50 ticks/floor, proper entry/exit prints.
-
-Known Limitations
-	Elevator uses a simple sweep (no direction prioritization).
-	Condition broadcast under heavy contention untested but logically sound.
-
-Final Status
-All four exercises compile, run, and print correct outputs under Nachos random scheduling.
-Project ready for submission 
