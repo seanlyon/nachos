@@ -21,6 +21,7 @@ public:
     ~ELEVATOR();
     void hailElevator(Person *p);
     void start();
+    void updateState();
 
 private:
     int currentState;
