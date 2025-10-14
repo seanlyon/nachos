@@ -15,7 +15,7 @@ void ELEVATOR::updateState() {
     int nextState = 0;
     int floor = 0;
 
-    if (currentState == 0) {
+    if ((currentState == 0) || (currentState = 1)) {
         for (int i = currentFloor - 1; i < maxFloor; i++) {
             if (requests[i]) {
                 nextState = 1;
@@ -24,33 +24,16 @@ void ELEVATOR::updateState() {
             }
         }
         if (floor == 0) {
-        for (int i = currentFloor - 1; i > 0; i--) {
-            if (requests[i]) {
-                nextState = -1;
-                floor = i + 1;
-                break;
+            for (int i = currentFloor - 1; i >= 0; i--) {
+                if (requests[i]) {
+                    nextState = -1;
+                    floor = i + 1;
+                    break;
+                }
             }
-        }
-        }
-    } else if (currentState == 1) {
-        for (int i = currentFloor - 1; i < maxFloor; i++) {
-            if (requests[i]) {
-                nextState = 1;
-                floor = i + 1;
-                break;
-            }
-        }
-        if (floor == 0) {
-        for (int i = currentFloor - 1; i > 0; i--) {
-            if (requests[i]) {
-                nextState = -1;
-                floor = i + 1;
-                break;
-            }
-        }
         }
     } else if (currentState == -1) {
-        for (int i = currentFloor - 1; i > 0; i--) {
+        for (int i = currentFloor - 1; i >= 0; i--) {
             if (requests[i]) {
                 nextState = -1;
                 floor = i + 1;
@@ -58,28 +41,28 @@ void ELEVATOR::updateState() {
             }
         }
         if (floor == 0) {
-        for (int i = currentFloor - 1; i < maxFloor; i++) {
-            if (requests[i]) {
-                nextState = 1;
-                floor = i + 1;
-                break;
+            for (int i = currentFloor - 1; i < maxFloor; i++) {
+                if (requests[i]) {
+                    nextState = 1;
+                    floor = i + 1;
+                    break;
+                }
             }
-        }
         }
     }
     /*
-    for (int i = 0; i < maxFloor; i++) {
-        if (requests[i]) {
-            if ((i > currentFloor - 1) || (currentFloor == 1)) {
-                nextState = 1;
-            }
-            else if ((i < currentFloor - 1) || (currentFloor == maxFloor)) {
-                nextState = -1;
-            }
-            nextFloor = i + 1;
-        }
-    }
-    */
+       for (int i = 0; i < maxFloor; i++) {
+       if (requests[i]) {
+       if ((i > currentFloor - 1) || (currentFloor == 1)) {
+       nextState = 1;
+       }
+       else if ((i < currentFloor - 1) || (currentFloor == maxFloor)) {
+       nextState = -1;
+       }
+       nextFloor = i + 1;
+       }
+       }
+       */
     currentState = nextState;
     nextFloor = floor;
 }
@@ -92,44 +75,47 @@ void ELEVATOR::start() {
         elevatorLock->Acquire();
         while(currentState == 0) {
             wakeElevator->Wait(elevatorLock);
-            //state->Wait(elevatorLock);
             updateState();
         }
         elevatorLock->Release();
 
         // B. While there are active persons, loop doing the following
         while(currentState != 0) {
-        //      0. Acquire elevatorLock
+            //      0. Acquire elevatorLock
             elevatorLock->Acquire();
-            
-        //      1. Signal persons inside elevator to get off (leaving->broadcast(elevatorLock))
+
+            //      1. Signal persons inside elevator to get off (leaving->broadcast(elevatorLock))
             leaving[currentFloor - 1]->Broadcast(elevatorLock);
             while (exitsPending[currentFloor - 1] != 0) {
                 floorCleared->Wait(elevatorLock);
             }
 
-        //      2. Signal persons atFloor to get in, one at a time, checking occupancyLimit each time
-            while ((personsWaiting[currentFloor - 1] > 0) && (occupancy < maxOccupancy)) {
+            //      2. Signal persons atFloor to get in, one at a time, checking occupancyLimit each time
+            while ((personsWaiting[currentFloor - 1] > 0)
+                    && (occupancy < maxOccupancy)) {
                 entering[currentFloor - 1]->Signal(elevatorLock);
                 boarded->Wait(elevatorLock);
             }
-            if (personsWaiting[currentFloor - 1] == 0) {
+
+            if (personsWaiting[currentFloor - 1] == 0
+                    && exitsPending[currentFloor - 1] == 0) {
                 requests[currentFloor - 1] = 0;
             }
 
-            if (currentFloor == nextFloor) {
-                updateState();
-            }
-        //      2.5 Release elevatorLock
+            updateState();
+
+            currentFloor = currentFloor + currentState;
+            //      2.5 Release elevatorLock
             elevatorLock->Release();
 
-        //      3. Spin for some time
+            //      3. Spin for some time
             for(int j =0 ; j< 1000000; j++) {
                 currentThread->Yield();
             }
-        //      4. Go to next floor
-            currentFloor = currentFloor + currentState;
-            printf("Elevator arrives on floor %d\n", currentFloor);
+            //      4. Go to next floor
+            if (currentState != 0) {
+                printf("Elevator arrives on floor %d\n", currentFloor);
+            }
         }
     }
 }
@@ -173,7 +159,7 @@ ELEVATOR::ELEVATOR(int numFloors) {
 }
 
 ELEVATOR::~ELEVATOR() {
-    
+
     for (int i = 0; i < maxFloor; i++) {
         delete entering[i];
         delete leaving[i];
@@ -182,6 +168,12 @@ ELEVATOR::~ELEVATOR() {
     delete[] leaving;
     delete[] requests;
     delete[] personsWaiting;
+    delete[] exitsPending;
+    delete wakeElevator;
+    delete boarded;
+    delete floorCleared;
+    delete state;
+    delete elevatorLock;
 }
 
 void Elevator(int numFloors) {
