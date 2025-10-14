@@ -30,6 +30,9 @@ private:
     int maxFloor;
 
     Condition *state;
+    Condition *wakeElevator;
+    Condition *boarded;
+    Condition *floorCleared;
     Condition **entering;
     Condition **leaving;
     
@@ -37,6 +40,7 @@ private:
     int *upRequests;
     int *downRequests;
 
+    int *exitsPending;
     int *personsWaiting;
     int occupancy;
     int maxOccupancy;
