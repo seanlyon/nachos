@@ -23,9 +23,18 @@ public:
     void start();
 
 private:
+    int currentState;
     int currentFloor;
+    int nextFloor;
+    
+    Condition *state;
     Condition **entering;
     Condition **leaving;
+    
+    int *requests;
+    int *upRequests;
+    int *downRequests;
+
     int *personsWaiting;
     int occupancy;
     int maxOccupancy;
