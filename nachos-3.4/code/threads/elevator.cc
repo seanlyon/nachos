@@ -3,6 +3,7 @@
 #include "synch.h"
 #include "elevator.h"
 
+#define MAX_OCCUPANCY 5
 
 int nextPersonID = 1;
 Lock *personIDLock = new Lock("PersonIDLock");
@@ -47,13 +48,15 @@ void ELEVATOR::start() {
             leaving[currentFloor - 1]->Broadcast(elevatorLock);
 
         //      2. Signal persons atFloor to get in, one at a time, checking occupancyLimit each time
-            while ((personsWaiting[currentFloor - 1] > 0) && (occupancy <= maxOccupancy)) {
+            while ((personsWaiting[currentFloor - 1] > 0) && (occupancy < maxOccupancy)) {
                 entering[currentFloor - 1]->Signal(elevatorLock);
                 state->Wait(elevatorLock);
             }
+            if (personsWaiting[currentFloor - 1] == 0) {
+                requests[currentFloor - 1] = 0;
+            }
 
             if (currentFloor == nextFloor) {
-                requests[currentFloor - 1] = 0;
                 updateState();
             }
         //      2.5 Release elevatorLock
@@ -85,22 +88,30 @@ ELEVATOR::ELEVATOR(int numFloors) {
     currentState = 0;
     currentFloor = 1;
     maxFloor = numFloors;
-    // Initialize entering
+    // Initialize
     entering = new Condition*[numFloors];
     leaving = new Condition*[numFloors];
     personsWaiting = new int[numFloors];
+    requests = new int[numFloors];
     for (int i = 0; i < numFloors; i++) {
         entering[i] = new Condition("Entering " + i);
         leaving[i] = new Condition("Leaving " + i);
+        personsWaiting[i] = 0;
+        requests[i] = 0;
     }
 
     elevatorLock = new Lock("ElevatorLock");
     state = new Condition("State");
-    requests = new int[numFloors];
     occupancy = 0;
-    maxOccupancy = 5;
+    maxOccupancy = MAX_OCCUPANCY;
 }
 
+ELEVATOR::~ELEVATOR() {
+    delete entering;
+    delete leaving;
+    delete requests;
+    delete personsWaiting;
+}
 
 void Elevator(int numFloors) {
     // Create Elevator Thread
@@ -148,8 +159,9 @@ void PersonThread(int person) {
 }
 
 int getNextPersonID() {
-    int personID = nextPersonID;
+    int personID;
     personIDLock->Acquire();
+    personID = nextPersonID;
     nextPersonID = nextPersonID + 1;
     personIDLock->Release();
     return personID;
