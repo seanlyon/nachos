@@ -1,0 +1,10 @@
+1. Excercise 1 (Completed) - Tasks overall were understood and completed with little difficulty. The modified version of ThreadTest() prior to the inclusion of
+			     Semaphores had each thread reading and writing the shared variable concurrently leading to all threads seeing the value 5.
+
+2. Excercise 2 (Completed) - Implementation of locks were somewhat tricky but overall simple to understand.
+
+3. Excercise 3 (Completed) - Implementation of conditions took a decent amount of time to understand and execute. Modification of locks was required in order for
+			     proper synchronization.
+
+4. Excercise 4 (Completed) - Implementation of elevator was difficult to understand at first but assistance of group members and project videos made the task much
+			     easier.
