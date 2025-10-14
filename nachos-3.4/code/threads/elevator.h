@@ -27,7 +27,8 @@ private:
     int currentState;
     int currentFloor;
     int nextFloor;
-    
+    int maxFloor;
+
     Condition *state;
     Condition **entering;
     Condition **leaving;

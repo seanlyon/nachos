@@ -115,7 +115,7 @@ main(int argc, char **argv)
 //    SemaphorePing();
 //    LockTest();
 //    Ping();
-    ElevatorTest(5, 5);
+    ElevatorTest(8, 5);
 #else
     ThreadTest();
 #endif
