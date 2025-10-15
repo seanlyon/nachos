@@ -59,7 +59,17 @@ extern int testnum;
 
 // External functions used by this file
 
-extern void ThreadTest(void), Copy(char *unixFile, char *nachosFile);
+#ifdef CHANGED
+extern void ThreadTest(int);
+extern void SemaphorePing(void);
+extern void LockTest(void);
+extern void Ping(void);
+extern void ElevatorTest(int numFloors, int numPersons);
+#else
+extern void ThreadTest(void);
+#endif
+
+extern void Copy(char *unixFile, char *nachosFile);
 extern void Print(char *file), PerformanceTest(void);
 extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 extern void MailTest(int networkID);
@@ -100,8 +110,17 @@ main(int argc, char **argv)
         break;
       }
     }
-
+#ifdef CHANGED
+    ThreadTest(3);
+//    SemaphorePing();
+//    LockTest();
+//    Ping();
+#ifdef HW1_ELEVATOR
+    ElevatorTest(8, 5);
+#endif
+#else
     ThreadTest();
+#endif
 #endif
 
     for (argc--, argv++; argc > 0; argc -= argCount, argv += argCount) {
