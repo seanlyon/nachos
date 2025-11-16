@@ -19,6 +19,7 @@
 #include "system.h"
 #include "addrspace.h"
 #include "noff.h"
+#include "pcb.h"
 #ifdef HOST_SPARC
 #include <strings.h>
 #endif
@@ -63,7 +64,11 @@ SwapHeader (NoffHeader *noffH)
 AddrSpace::AddrSpace(OpenFile *executable)
 {
     NoffHeader noffH;
-    unsigned int i, size;
+    int i; 
+    unsigned int size;
+    pcb* process;
+
+    valid = false;
 
     executable->ReadAt((char *)&noffH, sizeof(noffH), 0);
     if ((noffH.noffMagic != NOFFMAGIC) && 
@@ -78,44 +83,105 @@ AddrSpace::AddrSpace(OpenFile *executable)
     numPages = divRoundUp(size, PageSize);
     size = numPages * PageSize;
 
-    ASSERT(numPages <= NumPhysPages);		// check we're not trying
-						// to run anything too big --
-						// at least until we have
-						// virtual memory
+     if((int)numPages > memorymap->getFreePageCount()) {
+        valid = false;
+        return;
+    }
+
+    process = pcbm -> allocatePCB(); //pcb allocated
+    process -> thread = currentThread; //thread associated with pcb
+
 
     DEBUG('a', "Initializing address space, num pages %d, size %d\n", 
 					numPages, size);
 // first, set up the translation 
     pageTable = new TranslationEntry[numPages];
-    for (i = 0; i < numPages; i++) {
+    for (i = 0; i < (int)numPages; i++) {
 	pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
-	pageTable[i].physicalPage = i;
+	pageTable[i].physicalPage = memorymap -> allocatePage(); // ^ no longer 1:1 physical page is now allocated based on the memorymanagers bitmap
 	pageTable[i].valid = TRUE;
 	pageTable[i].use = FALSE;
 	pageTable[i].dirty = FALSE;
 	pageTable[i].readOnly = FALSE;  // if the code segment was entirely on 
 					// a separate page, we could set its 
 					// pages to be read-only
+
+    unsigned int pysicalPageAddress = pageTable[i].physicalPage*128;
+    bzero(&machine->mainMemory[pysicalPageAddress],128);
     }
     
-// zero out the entire address space, to zero the unitialized data segment 
-// and the stack segment
-    bzero(machine->mainMemory, size);
-
 // then, copy in the code and data segments into memory
     if (noffH.code.size > 0) {
         DEBUG('a', "Initializing code segment, at 0x%x, size %d\n", 
 			noffH.code.virtualAddr, noffH.code.size);
-        executable->ReadAt(&(machine->mainMemory[noffH.code.virtualAddr]),
-			noffH.code.size, noffH.code.inFileAddr);
+        for (i = 0; i < noffH.code.size; i++){
+            executable->ReadAt(&(machine->mainMemory[Translate(noffH.code.virtualAddr)+i]), 1  //reads into mainmemory a translated virtual address 1 byte at a time. note: might not work as intended 
+            ,noffH.code.inFileAddr+i);                                                         //Translate(noffH.code.virtualAddr)+i should technically be Translate(noffH.code.virtualAddr + 1)
+        }                                                                                      //but when I try that I a reserved instruction exception.
     }
     if (noffH.initData.size > 0) {
         DEBUG('a', "Initializing data segment, at 0x%x, size %d\n", 
 			noffH.initData.virtualAddr, noffH.initData.size);
-        executable->ReadAt(&(machine->mainMemory[noffH.initData.virtualAddr]),
-			noffH.initData.size, noffH.initData.inFileAddr);
+        for (i = 0; i < noffH.initData.size; i++){
+            executable->ReadAt(&(machine->mainMemory[Translate(noffH.initData.virtualAddr)+i]), 1
+            ,noffH.initData.inFileAddr+i);
+        }            
     }
 
+    valid = true;
+
+}
+
+TranslationEntry* AddrSpace::getPageTable(){
+    return pageTable;
+}
+
+unsigned int AddrSpace::getNumPages(){
+    return numPages;
+}
+
+
+
+// Constructor to create a copy of the passed address space
+AddrSpace::AddrSpace(AddrSpace* space){
+
+    valid = TRUE;
+
+    memoryLock -> Acquire();
+    
+    numPages = space -> getNumPages();
+
+    ASSERT((int)numPages <= memorymap -> getFreePageCount());
+
+    TranslationEntry* parentTable = space -> getPageTable();
+
+    pageTable = new TranslationEntry[numPages];
+    for (unsigned int i = 0; i < numPages; i++) {
+	pageTable[i].virtualPage = parentTable[i].virtualPage;
+	pageTable[i].physicalPage = memorymap -> allocatePage(); // ^ no longer 1:1 physical page is now allocated based on the memorymanagers bitmap
+	pageTable[i].valid = parentTable[i].valid;
+	pageTable[i].use = parentTable[i].use;
+	pageTable[i].dirty = parentTable[i].dirty;
+	pageTable[i].readOnly = parentTable[i].readOnly;
+
+    bcopy(&(machine -> mainMemory[parentTable[i].physicalPage*128]),
+          &(machine ->mainMemory[pageTable[i].physicalPage*128]),
+          128);
+			
+    }
+
+        memoryLock -> Release();
+
+}
+
+//Translates a virtual page to the physical address associated. Used when reading file contents into main memory for the first time.
+unsigned int AddrSpace::Translate(unsigned int vPage){
+    unsigned int vPageNumber = vPage/PageSize;
+    unsigned int offset = vPage % PageSize;
+    unsigned int frameNumber = pageTable[vPageNumber].physicalPage;
+
+    unsigned int physicalAddress = frameNumber * vPageNumber + offset;
+    return physicalAddress;
 }
 
 //----------------------------------------------------------------------

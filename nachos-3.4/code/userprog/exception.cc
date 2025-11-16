@@ -48,15 +48,65 @@
 //	are in machine.h.
 //----------------------------------------------------------------------
 
+
+
+//Function to read a string from starting from passed virtual address
+//of note to accesses the current processes address space use currentThread -> space
+char* readString(int virtualAddr){
+    int i = 0;
+    char* str = new char[256];
+    unsigned int physicalAddr = currentThread -> space -> Translate(virtualAddr);
+
+    bcopy(&(machine -> mainMemory[physicalAddr]), &str[i], 1);
+
+    while(str[i] != '\0' && i < 256){
+        virtualAddr++;
+        i++;
+
+        physicalAddr = currentThread -> space -> Translate(virtualAddr);
+
+        bcopy(&(machine->mainMemory[physicalAddr]), &str[i], 1);
+    }
+    if(str[i] == 255 && str[i] != '\0'){
+        str[i] = '\0';
+    }
+
+    return str;
+}
+
 void
 ExceptionHandler(ExceptionType which)
 {
-    int type = machine->ReadRegister(2);
+     int type = machine->ReadRegister(2);
 
-    if ((which == SyscallException) && (type == SC_Halt)) {
-	DEBUG('a', "Shutdown, initiated by user program.\n");
-   	interrupt->Halt();
-    } else {
+
+    if (which == SyscallException){
+        
+        if(type == SC_Halt){
+            DEBUG('a', "Shutdown, initiated by user program.\n");
+   	        interrupt->Halt();
+        }
+        else if(type == SC_Yield){
+
+        }
+        else if(type == SC_Fork){
+
+        }
+        else if(type == SC_Join){
+            
+        }
+        else if(type == SC_Exec){
+            
+        }
+        else if(type == SC_Create){
+            
+        }
+        else if(type == SC_Kill){
+            
+        }
+
+
+    }else{
 	printf("Unexpected user mode exception %d %d\n", which, type);
 	ASSERT(FALSE);
     }
