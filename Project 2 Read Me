@@ -1,0 +1,16 @@
+Im not sure whether or not pulling the entire repo will work.
+If not the following files need to be moved/updated into userprog:
+pcb.h/cc
+pcbmanager.h/cc
+memorymanager.h/cc
+addrspace.h/cc
+exception.cc
+syscall.h
+
+The following should also be moved/updated into threads
+list.h/cc
+system.h/cc
+
+I have also updated the makefile.common in this branch to include pcb pcbmanager and memorymanger
+but if you wanna keep your makefile.common to not mess anything up make sure to include the .cc .h and .o
+of those files
