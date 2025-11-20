@@ -48,6 +48,11 @@
 //	are in machine.h.
 //----------------------------------------------------------------------
 
+void doExit() {
+    delete currentThread->space;
+    currentThread->Finish();
+}
+
 void
 ExceptionHandler(ExceptionType which)
 {
@@ -56,6 +61,9 @@ ExceptionHandler(ExceptionType which)
     if ((which == SyscallException) && (type == SC_Halt)) {
 	DEBUG('a', "Shutdown, initiated by user program.\n");
    	interrupt->Halt();
+    } else if ((which == SyscallException) && (type == SC_Exit)) {
+        DEBUG('a', "Exit system call initiated by user program.\n");
+        doExit();
     } else {
 	printf("Unexpected user mode exception %d %d\n", which, type);
 	ASSERT(FALSE);
