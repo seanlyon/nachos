@@ -89,7 +89,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
     pageTable = new TranslationEntry[numPages];
     for (i = 0; i < numPages; i++) {
 	pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
-	pageTable[i].physicalPage = i;
+	pageTable[i].physicalPage = mm->AllocatePage();
 	pageTable[i].valid = TRUE;
 	pageTable[i].use = FALSE;
 	pageTable[i].dirty = FALSE;
@@ -115,6 +115,23 @@ AddrSpace::AddrSpace(OpenFile *executable)
         executable->ReadAt(&(machine->mainMemory[noffH.initData.virtualAddr]),
 			noffH.initData.size, noffH.initData.inFileAddr);
     }
+
+}
+
+unsigned int AddrSpace::GetNumPages() {
+    return numPages;
+}
+
+AddrSpace::AddrSpace(AddrSpace* space) {
+    // 1. Find how big the source address space is
+
+    // 2. Check if there is enough free memory to make the copy. If not, fail
+
+    // 3. Create a new page table
+    
+    // 4. Make a copy of the PTEs but allocate new physical pages
+
+    // 5. For each page, make an actual copy of the contents of the page
 
 }
 
