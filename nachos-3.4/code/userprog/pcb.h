@@ -19,7 +19,7 @@ class pcb{
   int exitStatus;
 
   void addChild(pcb* pcb);
-  //int removeChild(pcb* pcb);
+  int removeChild(pcb* pcb);
   bool hasExited(int arg);
   void exitCleanup(pcbmanager* pcbm);
 

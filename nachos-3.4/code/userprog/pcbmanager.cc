@@ -35,11 +35,11 @@ pcbmanager::~pcbmanager(){
 //pcb is then added to array of pcbs and is returned
 pcb* pcbmanager::allocatePCB(){
     
-    //pcbLock -> Acquire();
+    pcbLock -> Acquire();
 
     int freePID = pcbmap -> Find();
 
-    //pcbLock -> Release();
+    pcbLock -> Release();
     
     ASSERT(freePID != 1);
 
@@ -59,18 +59,18 @@ int pcbmanager::deallocatePCB(pcb* pcb){
         return -1;
     }
 
-    //pcbLock -> Acquire();
+    pcbLock -> Acquire();
 
     if (pcbmap -> Test(pcb->pid)){
         pcbmap -> Clear(pcb->pid);
 
     }else{
-        //pcbLock -> Release();
+        pcbLock -> Release();
         return -1;
 
     }
 
-    //pcbLock -> Release();
+    pcbLock -> Release();
 
     delete pcbs[pcb->pid];
     pcbs[pcb->pid] = NULL;

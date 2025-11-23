@@ -74,6 +74,27 @@ char* readString(int virtualAddr){
     return str;
 }
 
+void sysExit(int code){
+
+    
+    currentThread->space->process->exitCleanup(pcbm);
+
+
+}
+
+void sysYield(){
+    currentThread -> Yield();
+}
+
+
+void incrementPCR(){
+    int oldPCR = machine -> ReadRegister(34);
+    machine -> WriteRegister(PrevPCReg, oldPCR);
+    machine -> WriteRegister(PCReg, oldPCR + 4);
+    machine -> WriteRegister(NextPCReg, oldPCR + 8);
+
+}
+
 void
 ExceptionHandler(ExceptionType which)
 {
@@ -87,7 +108,8 @@ ExceptionHandler(ExceptionType which)
    	        interrupt->Halt();
         }
         else if(type == SC_Yield){
-
+            sysYield();
+            incrementPCR();
         }
         else if(type == SC_Fork){
 
@@ -103,6 +125,11 @@ ExceptionHandler(ExceptionType which)
         }
         else if(type == SC_Kill){
             
+        }
+        else if (type == SC_Exit){
+            int exitCode = machine -> ReadRegister(4);
+            sysExit(exitCode);
+            incrementPCR();
         }
 
 

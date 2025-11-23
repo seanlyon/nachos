@@ -32,9 +32,9 @@ void pcb::addChild(pcb* child){
 }
 
 //Removes the passed child from list of children.
-//int pcb::removeChild(pcb* child){
-  //  return children->RemoveItem(child);
-//}
+int pcb::removeChild(pcb* child){
+    return children->RemoveItem(child);
+}
 
 //Checks if process has been successfully completed
 bool pcb::hasExited(int arg){
@@ -55,6 +55,6 @@ void pcb::exitCleanup(pcbmanager* manager){
         }while (!(children -> IsEmpty()));
     }
 
-    //parent -> removeChild(manager->getPCB(pid));
+    parent -> removeChild(manager->getPCB(pid));
 
 }
