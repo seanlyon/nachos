@@ -11,17 +11,16 @@ class PCB {
     ~PCB();
     int pid;
     PCB* parent;
-    List* children;
     Thread* thread;
     int exitStatus;
 
-    void addChild(PCB* pcb);
+    void AddChild(PCB* pcb);
     int RemoveChild(PCB* pcb);
-    bool HasExited();
-    void DeleteExitedChildrenSetParentNull();
+    // bool HasExited();
+    // void DeleteExitedChildrenSetParentNull();
 
     private:
     List* children;
-}
+};
 
 #endif // PCB_H
