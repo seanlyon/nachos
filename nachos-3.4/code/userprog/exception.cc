@@ -24,7 +24,6 @@
 #include "copyright.h"
 #include "system.h"
 #include "syscall.h"
-#include "system.h"
 
 //----------------------------------------------------------------------
 // ExceptionHandler
@@ -52,7 +51,7 @@
 
 void doExit(int status) {
 
-    int pid = 99;
+    int pid = currentThread->space->pcb->pid;
 
     printf("System Call: [%d] invoked [Exit]\n", pid);
     printf ("Process [%d] exits with [%d]\n", pid, status);
@@ -141,7 +140,7 @@ int doFork(int functionAddr) {
 
 
     // 9. return pcb->pid;
-
+    return 0;
 }
 
 int doExec(char* filename) {
@@ -210,7 +209,7 @@ int doJoin(int pid) {
     // delete joinPCB;
 
     // 5. return status;
-
+    return 0;
 }
 
 
@@ -234,6 +233,7 @@ int doKill (int pid) {
     // scheduler->RemoveThread(pcb->thread);
 
     // 5. return 0 for success!
+    return 0;
 }
 
 
