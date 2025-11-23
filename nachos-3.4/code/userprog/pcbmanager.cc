@@ -40,8 +40,11 @@ int PCBManager::DeallocatePCB(PCB *pcb)
     // Check is pcb is valid -- check pcbs for pcb->pid
     if (pcbs[pid] == NULL)
         return -1;
+
     // pcbManagerLock->Acquire();
+
     bitmap->Clear(pid);
+
     // pcbManagerLock->Release();
 
     delete pcbs[pid];

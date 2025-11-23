@@ -50,7 +50,8 @@ main.o: ../threads/main.cc /usr/include/stdc-predef.h \
  ../filesys/openfile.h ../threads/scheduler.h ../threads/list.h \
  ../machine/interrupt.h ../threads/list.h ../machine/stats.h \
  ../machine/timer.h ../userprog/memorymanager.h ../userprog/bitmap.h \
- ../filesys/openfile.h ../threads/synch.h ../filesys/synchdisk.h \
+ ../filesys/openfile.h ../threads/synch.h ../userprog/pcbmanager.h \
+ ../userprog/pcb.h ../userprog/pcbmanager.h ../filesys/synchdisk.h \
  ../machine/disk.h ../threads/synch.h ../network/post.h \
  ../machine/network.h ../threads/synchlist.h
 list.o: ../threads/list.cc /usr/include/stdc-predef.h \
@@ -97,6 +98,7 @@ scheduler.o: ../threads/scheduler.cc /usr/include/stdc-predef.h \
  ../threads/system.h ../machine/interrupt.h ../threads/list.h \
  ../machine/stats.h ../machine/timer.h ../userprog/memorymanager.h \
  ../userprog/bitmap.h ../filesys/openfile.h ../threads/synch.h \
+ ../userprog/pcbmanager.h ../userprog/pcb.h ../userprog/pcbmanager.h \
  ../filesys/synchdisk.h ../machine/disk.h ../threads/synch.h \
  ../network/post.h ../machine/network.h ../threads/synchlist.h
 synch.o: ../threads/synch.cc /usr/include/stdc-predef.h \
@@ -124,6 +126,7 @@ synch.o: ../threads/synch.cc /usr/include/stdc-predef.h \
  ../threads/system.h ../threads/scheduler.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
+ ../userprog/pcbmanager.h ../userprog/pcb.h ../userprog/pcbmanager.h \
  ../filesys/synchdisk.h ../machine/disk.h ../threads/synch.h \
  ../network/post.h ../machine/network.h ../threads/synchlist.h
 synchlist.o: ../threads/synchlist.cc /usr/include/stdc-predef.h \
@@ -173,7 +176,8 @@ system.o: ../threads/system.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h
 thread.o: ../threads/thread.cc /usr/include/stdc-predef.h \
@@ -200,7 +204,8 @@ thread.o: ../threads/thread.cc /usr/include/stdc-predef.h \
  ../threads/synch.h ../threads/list.h ../threads/system.h \
  ../threads/scheduler.h ../machine/interrupt.h ../threads/list.h \
  ../machine/stats.h ../machine/timer.h ../userprog/memorymanager.h \
- ../userprog/bitmap.h ../filesys/openfile.h ../filesys/synchdisk.h \
+ ../userprog/bitmap.h ../filesys/openfile.h ../userprog/pcbmanager.h \
+ ../userprog/pcb.h ../userprog/pcbmanager.h ../filesys/synchdisk.h \
  ../machine/disk.h ../threads/synch.h ../network/post.h \
  ../machine/network.h ../threads/synchlist.h
 utility.o: ../threads/utility.cc /usr/include/stdc-predef.h \
@@ -246,7 +251,8 @@ ElevatorTest.o: ../threads/ElevatorTest.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h ../threads/elevator.h
 elevator.o: ../threads/elevator.cc /usr/include/stdc-predef.h \
@@ -273,7 +279,8 @@ elevator.o: ../threads/elevator.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h ../threads/elevator.h
 semaphore_ping.o: ../threads/semaphore_ping.cc /usr/include/stdc-predef.h \
@@ -300,7 +307,8 @@ semaphore_ping.o: ../threads/semaphore_ping.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h
 lockTest.o: ../threads/lockTest.cc /usr/include/stdc-predef.h \
@@ -327,7 +335,8 @@ lockTest.o: ../threads/lockTest.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h
 ping.o: ../threads/ping.cc /usr/include/stdc-predef.h \
@@ -354,7 +363,8 @@ ping.o: ../threads/ping.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h
 threadtest.o: ../threads/threadtest.cc /usr/include/stdc-predef.h \
@@ -381,7 +391,8 @@ threadtest.o: ../threads/threadtest.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h
 interrupt.o: ../machine/interrupt.cc /usr/include/stdc-predef.h \
@@ -409,7 +420,8 @@ interrupt.o: ../machine/interrupt.cc /usr/include/stdc-predef.h \
  ../filesys/openfile.h ../threads/scheduler.h ../threads/list.h \
  ../machine/interrupt.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h
 sysdep.o: ../machine/sysdep.cc /usr/include/stdc-predef.h \
@@ -490,7 +502,8 @@ sysdep.o: ../machine/sysdep.cc /usr/include/stdc-predef.h \
  ../filesys/openfile.h ../threads/scheduler.h ../threads/list.h \
  ../machine/interrupt.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h
 stats.o: ../machine/stats.cc /usr/include/stdc-predef.h \
@@ -536,7 +549,8 @@ timer.o: ../machine/timer.cc /usr/include/stdc-predef.h \
  ../filesys/openfile.h ../threads/scheduler.h ../threads/list.h \
  ../machine/interrupt.h ../threads/list.h ../machine/stats.h \
  ../machine/timer.h ../userprog/memorymanager.h ../userprog/bitmap.h \
- ../filesys/openfile.h ../threads/synch.h ../filesys/synchdisk.h \
+ ../filesys/openfile.h ../threads/synch.h ../userprog/pcbmanager.h \
+ ../userprog/pcb.h ../userprog/pcbmanager.h ../filesys/synchdisk.h \
  ../machine/disk.h ../threads/synch.h ../network/post.h \
  ../machine/network.h ../threads/synchlist.h
 addrspace.o: ../userprog/addrspace.cc /usr/include/stdc-predef.h \
@@ -563,7 +577,8 @@ addrspace.o: ../userprog/addrspace.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h ../userprog/addrspace.h ../bin/noff.h
 bitmap.o: ../userprog/bitmap.cc /usr/include/stdc-predef.h \
@@ -609,7 +624,8 @@ exception.o: ../userprog/exception.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h ../userprog/syscall.h
 progtest.o: ../userprog/progtest.cc /usr/include/stdc-predef.h \
@@ -636,7 +652,8 @@ progtest.o: ../userprog/progtest.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h ../machine/console.h ../userprog/addrspace.h
 memorymanager.o: ../userprog/memorymanager.cc /usr/include/stdc-predef.h \
@@ -678,7 +695,8 @@ pcb.o: ../userprog/pcb.cc /usr/include/stdc-predef.h ../userprog/pcb.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/floatn.h \
  /usr/include/bits/floatn-common.h /usr/include/string.h \
  /usr/include/bits/types/locale_t.h /usr/include/bits/types/__locale_t.h \
- /usr/include/strings.h
+ /usr/include/strings.h ../userprog/pcbmanager.h ../userprog/bitmap.h \
+ ../threads/utility.h ../filesys/openfile.h
 pcbmanager.o: ../userprog/pcbmanager.cc /usr/include/stdc-predef.h \
  ../userprog/pcbmanager.h ../userprog/bitmap.h ../threads/copyright.h \
  ../threads/utility.h ../threads/copyright.h ../threads/bool.h \
@@ -724,7 +742,8 @@ console.o: ../machine/console.cc /usr/include/stdc-predef.h \
  ../filesys/openfile.h ../threads/scheduler.h ../threads/list.h \
  ../machine/interrupt.h ../threads/list.h ../machine/stats.h \
  ../machine/timer.h ../userprog/memorymanager.h ../userprog/bitmap.h \
- ../filesys/openfile.h ../threads/synch.h ../filesys/synchdisk.h \
+ ../filesys/openfile.h ../threads/synch.h ../userprog/pcbmanager.h \
+ ../userprog/pcb.h ../userprog/pcbmanager.h ../filesys/synchdisk.h \
  ../machine/disk.h ../threads/synch.h ../network/post.h \
  ../machine/network.h ../threads/synchlist.h
 machine.o: ../machine/machine.cc /usr/include/stdc-predef.h \
@@ -751,7 +770,8 @@ machine.o: ../machine/machine.cc /usr/include/stdc-predef.h \
  ../filesys/openfile.h ../threads/scheduler.h ../threads/list.h \
  ../machine/interrupt.h ../threads/list.h ../machine/stats.h \
  ../machine/timer.h ../userprog/memorymanager.h ../userprog/bitmap.h \
- ../filesys/openfile.h ../threads/synch.h ../filesys/synchdisk.h \
+ ../filesys/openfile.h ../threads/synch.h ../userprog/pcbmanager.h \
+ ../userprog/pcb.h ../userprog/pcbmanager.h ../filesys/synchdisk.h \
  ../machine/disk.h ../threads/synch.h ../network/post.h \
  ../machine/network.h ../threads/synchlist.h
 mipssim.o: ../machine/mipssim.cc /usr/include/stdc-predef.h \
@@ -779,6 +799,7 @@ mipssim.o: ../machine/mipssim.cc /usr/include/stdc-predef.h \
  ../threads/list.h ../machine/interrupt.h ../threads/list.h \
  ../machine/stats.h ../machine/timer.h ../userprog/memorymanager.h \
  ../userprog/bitmap.h ../filesys/openfile.h ../threads/synch.h \
+ ../userprog/pcbmanager.h ../userprog/pcb.h ../userprog/pcbmanager.h \
  ../filesys/synchdisk.h ../machine/disk.h ../threads/synch.h \
  ../network/post.h ../machine/network.h ../threads/synchlist.h
 translate.o: ../machine/translate.cc /usr/include/stdc-predef.h \
@@ -805,7 +826,8 @@ translate.o: ../machine/translate.cc /usr/include/stdc-predef.h \
  ../machine/machine.h ../threads/scheduler.h ../threads/list.h \
  ../machine/interrupt.h ../threads/list.h ../machine/stats.h \
  ../machine/timer.h ../userprog/memorymanager.h ../userprog/bitmap.h \
- ../filesys/openfile.h ../threads/synch.h ../filesys/synchdisk.h \
+ ../filesys/openfile.h ../threads/synch.h ../userprog/pcbmanager.h \
+ ../userprog/pcb.h ../userprog/pcbmanager.h ../filesys/synchdisk.h \
  ../machine/disk.h ../threads/synch.h ../network/post.h \
  ../machine/network.h ../threads/synchlist.h
 directory.o: ../filesys/directory.cc /usr/include/stdc-predef.h \
@@ -853,7 +875,8 @@ filehdr.o: ../filesys/filehdr.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h ../filesys/filehdr.h ../userprog/bitmap.h
 filesys.o: ../filesys/filesys.cc /usr/include/stdc-predef.h \
@@ -902,6 +925,7 @@ fstest.o: ../filesys/fstest.cc /usr/include/stdc-predef.h \
  ../threads/list.h ../machine/interrupt.h ../threads/list.h \
  ../machine/stats.h ../machine/timer.h ../userprog/memorymanager.h \
  ../userprog/bitmap.h ../filesys/openfile.h ../threads/synch.h \
+ ../userprog/pcbmanager.h ../userprog/pcb.h ../userprog/pcbmanager.h \
  ../filesys/synchdisk.h ../machine/disk.h ../threads/synch.h \
  ../network/post.h ../machine/network.h ../threads/synchlist.h \
  ../threads/thread.h
@@ -931,6 +955,7 @@ openfile.o: ../filesys/openfile.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../threads/synch.h \
+ ../userprog/pcbmanager.h ../userprog/pcb.h ../userprog/pcbmanager.h \
  ../filesys/synchdisk.h ../threads/synch.h ../network/post.h \
  ../machine/network.h ../threads/synchlist.h
 synchdisk.o: ../filesys/synchdisk.cc /usr/include/stdc-predef.h \
@@ -980,7 +1005,8 @@ disk.o: ../machine/disk.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h
 nettest.o: ../network/nettest.cc /usr/include/stdc-predef.h \
@@ -1007,7 +1033,8 @@ nettest.o: ../network/nettest.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h ../network/post.h
 post.o: ../network/post.cc /usr/include/stdc-predef.h \
@@ -1057,7 +1084,8 @@ network.o: ../machine/network.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
  ../userprog/memorymanager.h ../userprog/bitmap.h ../filesys/openfile.h \
- ../threads/synch.h ../filesys/synchdisk.h ../machine/disk.h \
+ ../threads/synch.h ../userprog/pcbmanager.h ../userprog/pcb.h \
+ ../userprog/pcbmanager.h ../filesys/synchdisk.h ../machine/disk.h \
  ../threads/synch.h ../network/post.h ../machine/network.h \
  ../threads/synchlist.h
 # DEPENDENCIES MUST END AT END OF FILE
