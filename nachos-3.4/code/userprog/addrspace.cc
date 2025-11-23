@@ -81,7 +81,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
     numPages = divRoundUp(size, PageSize);
     size = numPages * PageSize;
 
-     if((int)numPages > memorymap->getFreePageCount()) {
+    if((int)numPages > memorymap->getFreePageCount()) {
         valid = false;
         return;
     }
@@ -127,7 +127,6 @@ AddrSpace::AddrSpace(OpenFile *executable)
     }
 
     valid = true;
-
 }
 
 TranslationEntry* AddrSpace::getPageTable(){

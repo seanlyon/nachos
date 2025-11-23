@@ -46,6 +46,7 @@ bool pcb::hasExited(int arg){
 //Parent of process that makes this call has this process removed from
 //children
 void pcb::exitCleanup(pcbmanager* manager){
+
     if (!(children -> IsEmpty())){
         do{
             pcb* child = (pcb*)children -> Remove();
@@ -55,6 +56,8 @@ void pcb::exitCleanup(pcbmanager* manager){
         }while (!(children -> IsEmpty()));
     }
 
-    parent -> removeChild(manager->getPCB(pid));
 
+    if (parent != NULL){
+        parent -> removeChild(manager->getPCB(pid));
+    }
 }

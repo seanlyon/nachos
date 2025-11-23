@@ -58,7 +58,7 @@ int pcbmanager::deallocatePCB(pcb* pcb){
     if(pcbs[pcb->pid] == NULL){
         return -1;
     }
-
+       printf("ehere22\n");
     pcbLock -> Acquire();
 
     if (pcbmap -> Test(pcb->pid)){
@@ -71,8 +71,7 @@ int pcbmanager::deallocatePCB(pcb* pcb){
     }
 
     pcbLock -> Release();
-
-    delete pcbs[pcb->pid];
+    
     pcbs[pcb->pid] = NULL;
 
     return 1;

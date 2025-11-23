@@ -75,9 +75,14 @@ char* readString(int virtualAddr){
 }
 
 void sysExit(int code){
+    currentThread -> space -> process -> exitStatus = code;
 
-    
-    currentThread->space->process->exitCleanup(pcbm);
+    currentThread -> space -> process -> exitCleanup(pcbm);
+ 
+    pcbm -> deallocatePCB(currentThread->space->process);
+    delete currentThread -> space;
+
+    currentThread -> Finish();
 
 
 }
