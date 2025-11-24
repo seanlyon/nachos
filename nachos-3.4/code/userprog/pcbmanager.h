@@ -3,6 +3,7 @@
 
 #include "bitmap.h"
 #include "pcb.h"
+#include "synch.h"
 
 class PCB;
 
