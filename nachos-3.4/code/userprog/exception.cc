@@ -236,15 +236,11 @@ int doKill (int pid) {
     return 0;
 }
 
-
-
 void doYield() {
+    int pid = currentThread->space->pcb->pid;
+    printf("System Call: [%d] invoked [Yield]\n", pid);
     currentThread->Yield();
 }
-
-
-
-
 
 // This implementation (discussed in one of the videos) is broken!
 // Try and figure out why.
@@ -260,15 +256,6 @@ char* readString1(int virtAddr) {
     return string;
 
 }
-
-
-
-
-
-
-
-
-
 
 // This implementation is correct!
 // perform MMU translation to access physical memory
