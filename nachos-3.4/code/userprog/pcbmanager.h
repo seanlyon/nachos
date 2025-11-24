@@ -20,7 +20,7 @@ class PCBManager {
     private:
         BitMap* bitmap;
         PCB** pcbs;
-        // Lock* pcbManagerLock;
+        Lock* pcbmLock;
 };
 
 #endif // PCBMANAGER_H
