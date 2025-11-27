@@ -90,57 +90,61 @@ void incrementPC() {
 void childFunction(int pid) {
 
     // 1. Restore the state of registers
-    // currentThread->RestoreUserState()
+    currentThread->RestoreUserState();
 
     // 2. Restore the page table for child
-    // currentThread->space->RestoreState()
+    currentThread->space->RestoreState();
 
-    // machine->Run();
+    machine->Run();
 
 }
 
 int doFork(int functionAddr) {
 
+    int pid = currentThread->space->pcb->pid;
+
+    printf("System Call: [%d] invoked [Fork]\n", pid);
+
     // 1. Check if sufficient memory exists to create new process
-    // currentThread->space->GetNumPages() <= mm->GetFreePageCount()
-    // if check fails, return -1
+    if (currentThread->space->GetNumPages() > mm->GetFreePageCount())
+        return -1;
 
     // 2. SaveUserState for the parent thread
-    // currentThread->SaveUserState();
+    currentThread->SaveUserState();
 
     // 3. Create a new address space for child by copying parent address space
-    // Parent: currentThread->space
-    // childAddrSpace: new AddrSpace(currentThread->space)
+    AddrSpace* childAddrSpace = new AddrSpace(currentThread->space);
 
     // 4. Create a new thread for the child and set its addrSpace
-    // childThread = new Thread("childThread")
-    // child->space = childAddSpace;
+    Thread* childThread = new Thread("childThread");
+    childThread->space = childAddrSpace;
 
     // 5. Create a PCB for the child and connect it all up
-    // pcb: pcbm->AllocatePCB();
-    // pcb->thread = childThread
-    // set parent for child pcb
-    // add child for parent pcb
-    // initialize pcb in childAddSpace
+    PCB* childPCB = pcbm->AllocatePCB();
+    childPCB->thread = childThread;
+    childPCB->parent = currentThread->space->pcb;
+    currentThread->space->pcb->AddChild(childPCB);
+    childAddrSpace->pcb = childPCB;
 
     // 6. Set up machine registers for child and save it to child thread
-    // PCReg: functionAddr
-    // PrevPCReg: functionAddr-4
-    // NextPCReg: functionAddr+4
-    // childThread->SaveUserState();
+    machine->WriteRegister(PCReg, functionAddr);
+    machine->WriteRegister(PrevPCReg, functionAddr - 4);
+    machine->WriteRegister(NextPCReg, functionAddr + 4);
+    childThread->SaveUserState();
 
     // 7. Restore register state of parent user-level process
-    // currentThread->RestoreUserState()
+    currentThread->RestoreUserState();
 
     // 8. Call thread->fork on Child
-    // childThread->Fork(childFunction, pcb->pid)
+    childThread->Fork(childFunction, childPCB->pid);
 
     // pcreg = machine->ReadRegister(PCReg)
     // print message for child creation (pid,  pcreg, currentThread->space->GetNumPages())
-
+    printf("Process [%d] Fork: start at address [%#04x] with [%d] pages memory\n", 
+        pid, functionAddr, currentThread->space->GetNumPages());
 
     // 9. return pcb->pid;
-    return 0;
+    return childPCB->pid;
 }
 
 int doExec(char* filename) {
@@ -216,21 +220,31 @@ int doJoin(int pid) {
 int doKill (int pid) {
 
     // 1. Check if the pid is valid and if not, return -1
-    // PCB* joinPCB = pcbm->GetPCB(pid);
-    // if (pcb == NULL) return -1;
+    PCB* killPCB = pcbm->GetPCB(pid);
+    if (killPCB == NULL) return -1;
 
     // 2. IF pid is self, then just exit the process
-    // if (pcb == currentThread->space->pcb) {
-    //         doExit(0);
-    //         return 0;
-    // }
+    if (killPCB == currentThread->space->pcb) {
+            doExit(0);
+            return 0;
+    }
 
     // 3. Valid kill, pid exists and not self, do cleanup similar to Exit
     // However, change references from currentThread to the target thread
     // pcb->thread is the target thread
 
+    // Delete exited children and set parent null for non-exited ones
+    killPCB->DeleteExitedChildrenSetParentNull();
+
+    // Manage PCB memory As a child process
+    if(killPCB->parent == NULL) pcbm->DeallocatePCB(killPCB);
+
+    // Delete address space only after use is completed
+    delete killPCB->thread->space;
+
     // 4. Set thread to be destroyed.
     // scheduler->RemoveThread(pcb->thread);
+    threadToBeDestroyed = killPCB->thread;
 
     // 5. return 0 for success!
     return 0;

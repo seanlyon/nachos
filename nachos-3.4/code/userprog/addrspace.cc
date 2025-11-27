@@ -76,6 +76,9 @@ AddrSpace::AddrSpace(OpenFile *executable)
         return;
     }
 
+    printf("Loaded Program: [%d] code | [%d] data | [%d] bss\n", 
+        noffH.code.size, noffH.initData.size, noffH.uninitData.size);
+
 // how big is address space?
     size = noffH.code.size + noffH.initData.size + noffH.uninitData.size
 			+ UserStackSize;	// we need to increase the size
@@ -198,6 +201,12 @@ AddrSpace::AddrSpace(AddrSpace* space) {
 
 AddrSpace::~AddrSpace()
 {
+    mmLock->Acquire();
+    for (unsigned int i = 0; i < numPages; i++) {
+        mm->DeallocatePage(pageTable[i].physicalPage);
+    }
+    mmLock->Release();
+
    delete pageTable;
 }
 
