@@ -106,8 +106,10 @@ int doFork(int functionAddr) {
     printf("System Call: [%d] invoked [Fork]\n", pid);
 
     // 1. Check if sufficient memory exists to create new process
-    if (currentThread->space->GetNumPages() > mm->GetFreePageCount())
+    if (currentThread->space->GetNumPages() > mm->GetFreePageCount()) {
+        printf("Not enough memory for child process");
         return -1;
+    }
 
     // 2. SaveUserState for the parent thread
     currentThread->SaveUserState();
@@ -196,30 +198,39 @@ int doExec(char* filename) {
 
 
 int doJoin(int pid) {
+    int currentPID = currentThread->space->pcb->pid;
+    printf("System Call: [%d] invoked [Join]\n", currentPID);
 
     // 1. Check if this is a valid pid and return -1 if not
-    // PCB* joinPCB = pcbm->GetPCB(pid);
-    // if (pcb == NULL) return -1;
+    if (pid < 0) return -1;
+
+    PCB* joinPCB = pcbm->GetPCB(pid);
+    if (joinPCB == NULL) return -1;
 
     // 2. Check if pid is a child of current process
-    // PCB* pcb = currentThread->space->pcb;
-    // if (pcb != joinPCB->parent) return -1;
+    PCB* pcb = currentThread->space->pcb;
+    if (pcb != joinPCB->parent) return -1;
 
     // 3. Yield until joinPCB has not exited
-    // while(!joinPCB->hasExited) currentThread->Yield();
+    while(!joinPCB->HasExited()) currentThread->Yield();
 
     // 4. Store status and delete joinPCB
-    // int status = joinPCB->exitStatus;
-    // delete joinPCB;
+    int status = joinPCB->exitStatus;
+    pcb->RemoveChild(joinPCB);
+    delete joinPCB;
 
     // 5. return status;
-    return 0;
+    return status;
 }
 
 
 int doKill (int pid) {
+    int currentPID = currentThread->space->pcb->pid;
+    printf("System Call: [%d] invoked [Kill]\n", currentPID);
 
     // 1. Check if the pid is valid and if not, return -1
+    if (pid < 0) return -1;
+
     PCB* killPCB = pcbm->GetPCB(pid);
     if (killPCB == NULL) return -1;
 
