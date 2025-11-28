@@ -1,0 +1,31 @@
+Sean Lyon
+
+I started the project by following the review videos to set up the prerequisites 
+for the system calls. AddrSpace, MemoryManager, PCB, and PCBManager were implemented 
+and made globally accessible through system. When adding the PCBManagerLock I ran 
+into errors caused by a circular include between the PCB and PCBManager header files. 
+I resolved the errors by forward declaring the PCBManager class in pcb.h and 
+including pcbmanager.h in pcb.cc instead.
+
+I first implemented Exit and Yield. These system calls were very straightforward. 
+Next I tried to implement Kill but I realized that the test relies on Fork calls.
+
+I moved onto the Fork implementation where I ran into a bug that caused child 
+processes to fail due to not enough memory. This was an issue of not deallocating 
+physical pages in AddrSpace's destructor.
+
+After Fork, I implemented Join. This implementation was also pretty straightforward, 
+but I ran into a bug caused not adequately checking invalid PIDs that were -1 instead 
+of NULL.
+
+Next, I implemented Exec. This was very similar to StartProcess() in progtest.cc, so 
+I didn't have any issues outside of ensuring the test was invoked from the correct 
+directory.
+
+Finally, I returned to Kill. This gave me a segmentation fault that was difficult to 
+track down. I used gdb to step through the test and set breakpoints at doKill and 
+doExit. I eventually noticed that the problem was caused by setting threadToBeDestroyed 
+in doKill instead of implementing a more direct RemoveThread in the Scheduler. The 
+childThread would be destroyed but was still in Scheduler->readyList. This meant the 
+main thread would attempt to switch to a non-existent thread rather than terminating 
+the program. After implementing RemoveThread, all of the system calls executed properly.

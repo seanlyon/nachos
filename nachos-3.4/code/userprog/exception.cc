@@ -67,6 +67,12 @@ void doExit(int status) {
 
     // Manage PCB memory As a child process
     if(pcb->parent == NULL) pcbm->DeallocatePCB(pcb);
+    else {
+        // printf("DeallocatePCB failed\n");
+        pcb->parent->RemoveChild(pcb);
+        pcb->parent = NULL;
+        pcbm->DeallocatePCB(pcb);
+    }
 
     // Delete address space only after use is completed
     delete currentThread->space;
@@ -107,7 +113,7 @@ int doFork(int functionAddr) {
 
     // 1. Check if sufficient memory exists to create new process
     if (currentThread->space->GetNumPages() > mm->GetFreePageCount()) {
-        printf("Not enough memory for child process");
+        printf("Not enough memory for child process\n");
         return -1;
     }
 
@@ -150,48 +156,54 @@ int doFork(int functionAddr) {
 }
 
 int doExec(char* filename) {
+    int pid = currentThread->space->pcb->pid;
 
+    printf("System Call: [%d] invoked [Exec]\n", pid);
+    
     // Use progtest.cc:StartProcess() as a guide
 
     // 1. Open the file and check validity
-    // OpenFile *executable = fileSystem->Open(filename);
-    // AddrSpace *space;
+    OpenFile *executable = fileSystem->Open(filename);
+    AddrSpace *space;
 
-    // if (executable == NULL) {
-    //     printf("Unable to open file %s\n", filename);
-    //     return -1;
-    // }
+    if (executable == NULL) {
+        printf("Unable to open file %s\n", filename);
+        return -1;
+    }
 
     // 2. Delete current address space but store current PCB first if using in Step 5.
-    // PCB* pcb = currentThread->space->pcb;
-    // delete currentThread->space;
+    PCB* pcb = currentThread->space->pcb;
+    delete currentThread->space;
 
     // 3. Create new address space
-    // space = new AddrSpace(executable);
+    space = new AddrSpace(executable);
 
-    // 4.     delete executable;			// close file
+    printf("Exec Program: [%d] loading [%s]\n", pid, filename);
+
+    // 4. Close file
+    delete executable;
 
     // 5. Check if Addrspace creation was successful
-    // if(space->valid != true) {
-    // printf("Could not create AddrSpace\n");
-    //     return -1;
-    // }
+    if(space->valid != true) {
+    printf("Could not create AddrSpace\n");
+        return -1;
+    }
 
     // 6. Set the PCB for the new addrspace - reused from deleted address space
-    // space->pcb = pcb;
+    space->pcb = pcb;
 
     // 7. Set the addrspace for currentThread
-    // currentThread->space = space;
+    currentThread->space = space;
 
     // 8. Initialize registers for new addrspace
-    //  space->InitRegisters();		// set the initial register values
+    space->InitRegisters();		// set the initial register values
 
     // 9. Initialize the page table
-    // space->RestoreState();		// load page table register
+    space->RestoreState();		// load page table register
 
     // 10. Run the machine now that all is set up
-    // machine->Run();			// jump to the user progam
-    // ASSERT(FALSE); // Execution nevere reaches here
+    machine->Run();			// jump to the user progam
+    ASSERT(FALSE); // Execution nevere reaches here
 
     return 0;
 }
@@ -243,6 +255,7 @@ int doKill (int pid) {
     // 3. Valid kill, pid exists and not self, do cleanup similar to Exit
     // However, change references from currentThread to the target thread
     // pcb->thread is the target thread
+    killPCB->exitStatus = -1;
 
     // Delete exited children and set parent null for non-exited ones
     killPCB->DeleteExitedChildrenSetParentNull();
@@ -254,11 +267,19 @@ int doKill (int pid) {
     delete killPCB->thread->space;
 
     // 4. Set thread to be destroyed.
-    // scheduler->RemoveThread(pcb->thread);
-    threadToBeDestroyed = killPCB->thread;
+    int ret = scheduler->RemoveThread(killPCB->thread);
+
+    if (ret == -1)
+        printf("Process [%d] cannot kill process [%d]: doesn't exist\n", currentPID, pid);
+    else
+        printf("Process [%d] killed process [%d]\n", currentPID, pid);
+
+    // threadToBeDestroyed = killPCB->thread;
+    // killPCB->thread->setStatus(BLOCKED);
+    // currentThread->Yield();
 
     // 5. return 0 for success!
-    return 0;
+    return ret;
 }
 
 void doYield() {
