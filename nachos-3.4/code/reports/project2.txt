@@ -1,4 +1,6 @@
 Sean Lyon
+Liam Timana
+Dario Munoz
 
 I started the project by following the review videos to set up the prerequisites 
 for the system calls. AddrSpace, MemoryManager, PCB, and PCBManager were implemented 
